@@ -8,5 +8,6 @@ spec:
   containers:
     - name: node-sys-info
       image: rockink/node-sys-info:v2
+      imagePullPolicy: Always
       ports:
         - containerPort: 3000
