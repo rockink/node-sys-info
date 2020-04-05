@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sys-info-deployment
+  labels:
+    app-type: web-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app-type: web-server
+  template:
+    metadata:
+      labels:
+        app-type: web-server
+    spec:
+      containers:
+      - name: node-sys-info
+        image: rockink/node-sys-info:v2
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 3000
+        resources:
+          requests:
+            cpu: 100m
+            memory: 50m
+          limits:
+            cpu: 250m
+
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: web-server-autoscaler
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: sys-info-deployment
+  minReplicas: 1
+  maxReplicas: 500
+  targetCPUUtilizationPercentage: 10
